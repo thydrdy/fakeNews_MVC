@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+		<meta name="generator" content="Jekyll v3.8.5">
+		<title>School account</title>
+		{% load static %}
+		<link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top" style="opacity:0;">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<a href="#" class="navbar-brand mr-auto">XAD</a>
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item active"><a class="nav-link" href="" tabindex="-1" >Train</a></li>
+				<li class="nav-item active"><a class="nav-link" href="" tabindex="-1" >Test</a></li>
+			</ul>
+		</nav>
+	
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-8">
+					<!-- This is wher the magic happens -->
+					<form action="" method="POST">
+						<div class="form-row">
+							<input type="text" name="search_val" class="form-control col-10" id="">
+							<input type="submit" class="btn btn-outline-primary float-left col-2 m-3" value="Search">
+						</div>
+					</form>
+
+					<div class="row mt-4">
+						<div class="col-6">
+							<div class="row">
+								<div class="col-12">
+										<span class="float-left">Entities <b>{{length}}</b></span>
+										<a href="" class="btn btn-outline-success float-right">Add</a>
+								</div>
+							</div>
+							
+							<!-- Entity -->
+							<ul class="p-0 m-0">
+								{% if list_of_entities %}
+								{% for entity in list_of_entities %}
+								<li class="bg-light" style="list-style-type: none; border-radius: 5px;background-color: black;margin-top: 5px;">
+									<div class="row  entity p-1">
+										<div class="col-12" style="align-items:baseline ">
+											<div>
+												<span class="float-left" style="font-weight: bold; font-size: 24px;text-transform: capitalize">{{ entity.entity_name }}</span>
+												<span>
+													<a href="/web/{{entity.id}}" class="btn btn-outline-info float-right">Edit</a>
+													<a href="/web/{{entity.id}}/delete" class="btn btn-outline-danger float-right">Delete</a>
+												</span>
+											</div>
+										</div>
+										<div class="col-12">
+											<div class="question">
+												Question:{{ entity.users_question }}
+											</div>
+											{{count}}
+		
+											<div class="answer">
+													Answer:{{ entity}}
+											</div>
+		
+										</div>
+								</div>
+								</li>
+								{% endfor %}
+								{% else %}
+								<li class="bg-light" style="list-style-type: none; border-radius: 5px;">
+										<div class="question">NO entity is registered yet.</div>
+								</li>
+								{% endif %}
+							</ul>
+						</div>
+
+						<div class="col-md-6">
+							{% if enitiy_obj %}
+							<form action="">
+								<div class="form-group">
+									<span class="">Basics</span>
+									<input type="text" class="form-control" placeholder="Entity Name" value="{{ enitiy_obj.entity_name }}">
+									<input type="text" class="form-control" placeholder="Question" value="{{ enitiy_obj.users_question }}">
+									<div class="dropdown">
+											<button class="btn btn-outline-secondary form-control dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+												Answers
+											</button>
+											<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+											{% for answer in enitiy_obj.bots_answer %}
+												<a class="dropdown-item" href="#">{{answer}}</a>
+											{% endfor %}
+										</div>
+										</div>
+								</div>
+
+								<div class="form-group">
+										<span class="">Advanced</span>
+										<input type="text" class="form-control" placeholder="Previous Question" value="previous question: {{ enitiy_obj.that_tag }}">
+											<div class="dropdown">
+													<button class="btn btn-outline-secondary form-control dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+														Related Questions
+													</button>
+													<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+													{% for question in enitiy_obj.related_questions %}
+														<a class="dropdown-item" href="#">{{ question }}</a><hr/>
+													{% endfor %}
+													</div>
+												</div>
+										<div class="dropdown">
+												<button class="btn btn-outline-secondary form-control dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+													Conditions
+												</button>
+												<div class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
+												{% for condition in enitiy_obj.conditioned_answers %}
+													<div class="dropdown-item bg-info " href="#">
+														<span><b>Variable:</b> {{ condition.variable_name }}</span>
+														<span class="justify-content-end"><b>Value:</b> {{ condition.variable_value }}</span>
+													</div>
+													<a class="dropdown-item " href="#">Answer: {{ condition.conditioned_answer }}</a>
+												{% endfor %}
+											</div>
+											</div>
+									</div>
+							</form>
+							{% endif %}
+						</div>
+
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						  Dropdown button
+						</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						  <a class="dropdown-item" href="#">Action</a>
+						  <a class="dropdown-item" href="#">Another action</a>
+						  <a class="dropdown-item" href="#">Something else here</a>
+						</div>
+					  </div>
+				</div>
+			</div>
+		</div>
+		{% load static %}
+		<script src="{% static "js/popper.min.js" %}"></script>
+		{% load static %}
+		<script src="{% static "js/jquery-3.3.1.js" %}"></script>
+		{% load static %}
+		<script src="{% static "js/bootstrap.min.js" %}"></script>
+	</body>
+</html>

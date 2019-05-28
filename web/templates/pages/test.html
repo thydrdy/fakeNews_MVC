@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+		<meta name="generator" content="Jekyll v3.8.5">
+		<title>School account</title>
+		{% load static %}
+		<link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<a href="#" class="navbar-brand mr-auto">XAD</a>
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item active"><a class="nav-link" href="" tabindex="-1" >Train</a></li>
+				<li class="nav-item active"><a class="nav-link" href="" tabindex="-1" >Test</a></li>
+			</ul>
+		</nav>
+	
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-8">
+					<!-- This is wher the majik happens -->
+					<form action="" method="POST">
+						<div class="form-row">
+							<input type="text" name="search_val" class="form-control col-10" id="">
+							<input type="submit" class="btn btn-outline-warning float-left col-2" value="Search">
+						</div>
+					</form>
+
+					<div class="row mt-4">
+						<div class="col-6">
+							<div class="row">
+								<div class="col-12">
+										<span class="float-left">Entities</span>
+										<a href="" class="btn btn-outline-success float-right">Add</a>
+								</div>
+							</div>
+							
+							<!-- Entity -->
+							<ul class="p-0 m-0">
+								{% if list_of_entities %}
+								{% for entity in list_of_entities %}
+								<li class="bg-light" style="list-style-type: none; border-radius: 5px;background-color: black;margin-top: 5px;">
+									<div class="row  entity p-1">
+										<div class="col-12" style="align-items:baseline ">
+											<div>
+												<span class="float-left" style="font-weight: bold; font-size: 24px;text-transform: capitalize">{{ entity.entity_name }}</span>
+												<span>
+													<a href="/web/{{entity.id}}" class="btn btn-outline-info float-right">Edit</a>
+													<a href="/web/{{entity.id}}/delete" class="btn btn-outline-danger float-right">Delete</a>
+												</span>
+											</div>
+										</div>
+										<div class="col-12">
+											<div class="question">
+												Question:{{ entity.users_question }}
+											</div>
+											{{count}}
+		
+											<div class="answer">
+													Answer:{{ entity}}
+											</div>
+		
+										</div>
+								</div>
+								</li>
+								{% endfor %}
+								{% else %}
+								<li class="bg-light" style="list-style-type: none; border-radius: 5px;">
+										<div class="question">NO entity is registered yet.</div>
+								</li>
+								{% endif %}
+							</ul>
+						</div>
+
+						<div class="col-md-6">
+
+							<form action="/web/chat/ans" method="POST" > 
+								<div class="form-group">
+									<span class="">Basics</span>
+									<input type="text" class="form-control" name="question" placeholder="Question" value="{{ question }}">
+									<button class="btn btn-primary " type="submit"  > Answers </button>
+								</div>
+							</form>
+							<div>
+									<span>{{entity.bot_ret_answer}}</span> 
+							</div>
+						</div>
+						
+
+					</div>
+				</div>
+				<div class="col-sm-4">
+					Trainig area
+				</div>
+			</div>
+		</div>
+		{% load static %}
+		<script src="{% static "js/popper.min.js" %}"></script>
+		{% load static %}
+		<script src="{% static "js/jquery-3.3.1.js" %}"></script>
+		{% load static %}
+		<script src="{% static "js/bootstrap.min.js" %}"></script>
+	</body>
+</html>

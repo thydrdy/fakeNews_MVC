@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% load static %}
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+    <title>Add Thread</title>
+    <style>
+        .custom_input{
+            /* box-shadow:  0 0 2px 2px  rgba(240, 240, 240, 0.19) , 0 0 2px 2px rgba(240, 240, 240, 0.2) ; */
+            margin: 10px 0;
+            border: none;
+            color: white;
+            border-radius: 0px;
+            background-color: rgba(150,150,150, 0.3) !important;
+        }
+    </style>
+</head>
+<body>
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <a class="navbar-brand" href="/web/">ukweli.com</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                </div>
+    
+                <ul class="navbar-nav float-left mx-4">
+                        <li class="nav-item active">
+                          <a class="nav-link" href="/web/posts"> #threads <span class="sr-only">(current)</span></a>
+                        </li>
+                        {% if system_user %}
+                        <li class="nav-item">
+                                <a class="nav-link" href="/web/posts_add"> add thread <span class="sr-only">(current)</span></a>
+                        </li>
+                        {% endif %}
+                      
+                    </ul>
+
+                <form class="form-inline float-right" action="/web/search" method="POST">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">#</span>
+                        </div>
+                        <input type="text" name="search" id="name_search" class="form-control" placeholder="Latest" aria-label="Username" aria-describedby="basic-addon1">
+                        <input type="submit" id="submit_search" value="">
+                    </div>
+                    </form>
+                </nav>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-sm-4 p-5" style="border-radius: 10px; background-color: rgba(100,100,100, 0.1) !important;position: fixed;top:15% ; box-shadow:  0 0 25px 3px  rgba(127, 255, 0, 0.19) , 0 0 25px 3px rgba(127, 255, 0, 0.2) ;">
+                <p class="text-center display-4">Create a thread</p>
+                <form action="/web/create_post" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="text" style="color: white" name="thread_name" class="form-control custom_input" placeholder="#threadName">
+                        <input type="text" style="color: white" name="head_line" class="form-control custom_input" placeholder="head line">                        
+                        <input type="text" style="color: white" name="link" class="form-control custom_input" placeholder="link">
+                        <input type="text" style="color: white"  name="news_status" class="form-control custom_input" placeholder="Status">
+                        <!-- <textarea type="text" name="additional_info" class="form-control" placeholder="Additional info"> -->
+                        <textarea style="color: white " name="additional_info" id="" class="form-control custom_input" cols="30" rows="6" placeholder="Additional Information"></textarea>
+                        <input type="file" name="image" class="form-control custom_input" placeholder="Upload Image">
+                        
+                        <input style="color: white" type="submit" class="btn btn-outline-secondary float-right custom_input" name="" id="" value="add post">
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chat</title>
+
+    {% load static %}
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/style.css" %}" />
+    {% load static %}
+    <script src="{% static "js/jquery-3.3.1.js" %}"></script>
+    {% load static %}
+    <script href="{% static "js/script.js" %}"></script>
+</head>
+
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a href="#" class="navbar-brand mr-auto">XAD</a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active"><a class="nav-link" href="" tabindex="-1">Train</a></li>
+            <li class="nav-item active"><a class="nav-link" href="" tabindex="-1">Test</a></li>
+        </ul>
+    </nav>
+    <div class="container h-100" style="padding: 70px;">
+        <!--sidebar-->
+        <div>
+
+        </div>
+        <!--training-->
+        <div class="row">
+            <!--left side-->
+            <div class="col-md-8">
+                <div class="container" style="max-height:15%;overflow-y:scroll;">
+                    {% if list_of_entities %}
+                    {% for entity in list_of_entities %}
+                    <!-- Entity -->
+                    <div class="card m-2">
+                        <div class="card-header">
+                            <div class="question-display">
+                                <b>{{entity.entity_name}}</b><br />
+                                Question:{{ entity.users_question }}
+                            </div>
+                            <div class="float-right ">
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            Answer:{{ entity}}
+
+                            <div>
+                                <a href="/web/{{entity.id}}"  > more -&gt;&gt;</a>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <!--end of Entity-->
+            </div>
+            <!--end of left side-->
+
+            <!--right side-->
+            <div class="col-md-2">
+                <button type="button" id="more_btn" class="btn btn-primary my-3" data-toggle="modal"
+                    data-target="#exampleModalCenter">
+                    Bestow Knowledge
+                </button>
+                <button type="button" class="btn btn-success my-3" data-toggle="modal" data-target="#saveModal">
+                    Add
+                </button>
+                <!-- Modal Display -->
+                {% if enitiy_obj %}
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {% if enitiy_obj %}
+                                <form action="">
+                                    <div class="form-group">
+                                        <span class="">Basics</span>
+                                        <input type="text" class="form-control" placeholder="Entity Name"
+                                            value="{{ enitiy_obj.entity_name }}">
+                                        <input type="text" class="form-control" placeholder="Question"
+                                            value="{{ enitiy_obj.users_question }}">
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary form-control dropdown-toggle"
+                                                type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                                Answers
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                {% for answer in enitiy_obj.bots_answer %}
+                                                <a class="dropdown-item"
+                                                    style="max-width:200px; overflow-wrap: break-word; word-wrap: break-word;"
+                                                    href="#">{{answer}}</a>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <span class="">Advanced</span>
+                                        <input type="text" class="form-control" placeholder="Previous Question"
+                                            value="previous question: {{ enitiy_obj.that_tag }}">
+                                        <div class="">
+                                            <button class="btn btn-outline-secondary form-control dropdown-toggle"
+                                                type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                                Related Questions
+                                            </button>
+                                            <ul class="list-group" aria-labelledby="dropdownMenuButton">
+                                                {% for question in enitiy_obj.related_questions %}
+                                                <li class="list-group-item" href="#">{{ question }}</li>
+                                                <hr />
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary form-control dropdown-toggle"
+                                                type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                                Conditions
+                                            </button>
+                                            <div class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
+                                                {% for condition in enitiy_obj.conditioned_answers %}
+                                                <div class="dropdown-item bg-info " href="#">
+                                                    <span><b>Variable:</b> {{ condition.variable_name }}</span>
+                                                    <span class="justify-content-end"><b>Value:</b>
+                                                        {{ condition.variable_value }}</span>
+                                                </div>
+                                                <a class="dropdown-item " href="#">Answer:
+                                                    {{ condition.conditioned_answer }}</a>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                {% endif %}
+                            </div>
+                            <div class="modal-footer">
+                                <button onclick="del('{{enitiy_obj.id}}');" class="btn btn-danger" data-dismiss="modal">Delete</button>
+                                <button type="button" class="btn btn-success">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!--end of Modal-->
+                <!--Modal Add-->
+                <form action="/web/add/" method="POST" >
+                <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModal"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Save Entity</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="form-group">
+                                        <span class="">Basics</span>
+                                        <input type="text" class="form-control" name="entity_name" placeholder="Entity Name">
+                                        <input type="text" class="form-control" name="question"  placeholder="Question">
+                                        <input type="text" class="form-control" name="answer" placeholder="Answer">
+                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Clear</button>
+                                <input type="submit" class="btn btn-success" value="Save changes" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+                <!--end of Modal Add-->
+            </div>
+            <!--end of right side-->
+        </div>
+        <!--end of training-->
+        <!--chatbox-->
+        <div>
+            <div class="chat" id="chat">
+                <!--fab-->
+                <div class="img_cont fab" id="fab" onclick="openup();">
+                    <img src="{% static "images/bot.png" %}" class="rounded-circle user_img" id="fab">
+                    <span class="online_icon"></span>
+                </div>
+                <!--end of fab-->
+                <div class="card h-75 chat-popup">
+                    <div class="card-header msg_head" id="msg_head">
+                        <div class="d-flex bd-highlight">
+                            <div class="img_cont">
+                                <img src="{% static "images/bot.png" %}" class="rounded-circle user_img">
+                            </div>
+                            <div class="user_info">
+                                <span>XAD</span>
+                                <p> <span id="no"></span> Messages</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="message_content">
+                        <div class="card-body msg_card_body">
+                            <!--   conversation  -->
+                        </div>
+                    </div>
+                    <div class="card-footer msg_input">
+                        <div class="input-group">
+                            <input type="text" id="question" name="question" class="form-control type_msg"
+                                placeholder="Type your message...">
+                            <div class="input-group-append">
+                                <button type="submit" class="input-group-text send_btn" id="submit"
+                                    onclick="reply();"><i class="fas fa-location-arrow"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!--end of chatbox-->
+
+    </div>
+    
+
+
+
+    {% block javascript %}
+    <script>
+        $(document).ready(function () {
+            $('.type_msg').focus();
+            $('#msg_head').click(function () {
+                $('.chat-popup').hide();
+                $("#fab").show();
+            });
+            $("#question").keypress(
+                function (event) {
+                    // Number 13 is the "Enter" key on the keyboard
+                    if (event.keyCode === 13) {
+                        // Cancel the default action, if needed
+                        event.preventDefault();
+                        // Trigger the button element with a click
+                        $("#submit").click();
+                    }
+                });
+
+            //$("#fab").effect( "bounce", {times:3}, 300 );
+
+        });
+        var mode = 0;
+        var object;
+
+        function reply() {
+            var pattern = $('#question').val();
+            $.ajax({
+                url: '/web/chat/ans',
+                data: {
+                    'question': pattern
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if ($('.type_msg').val() == "") {
+                        return;
+                    } else {
+                        var d = new Date();
+                        var curr_hour = d.getHours();
+                        var curr_min = d.getMinutes();
+                        $('.msg_card_body').append(`
+                            <div class="d-flex justify-content-end mb-4">
+                                <div id="msg1" class="msg_cotainer_send">` + data['question'] +
+                            ` <span class="msg_time_send">` + curr_hour + `:` + curr_min + `</span>
+                                </div>
+                                <div class="img_cont_msg">
+                                    <img  src="{% static "images/user.png" %}"  class="rounded-circle user_img_msg">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-start mb-4">
+                                        <div class="img_cont_msg" >
+                                                <img src="{% static "images/bot.png" %}"  class="rounded-circle user_img_msg">
+                                        </div>
+                                        <div id="msg1" class="msg_cotainer" >
+                                                <span>` + data['answer'] + `</span>
+                                                <span class="msg_time_send" >` + curr_hour + `:` + curr_min + `</span> 
+                                        </div>            
+                            </div>
+                    `
+                        );
+                    }
+                    $('.type_msg').val("");
+                    $('.msg_card_body').animate({
+                        scrollTop: $('.msg_card_body').prop('scrollHeight')
+                    }, 300);
+                    $('.message_content').animate({
+                        scrollTop: $('.message_content').prop('scrollHeight')
+                    }, 300);
+                    $('.type_msg').focus();
+
+
+                }
+            });
+        };
+
+        function openup() {
+            $('.chat-popup').show();
+            $("#fab").hide();
+            $('.type_msg').focus();
+        };
+
+        function del(entity_id){
+            var inv= confirm("ARE YOU SURE YOU WANT TO DELETE THIS ENTITY??")
+            inv.show
+            if(inv){
+                $.ajax({
+                url: '/web/delete/',
+                data: {
+                    'entity_id': entity_id
+                },
+                dataType: 'json',
+                success: function (data) {
+                    confirm("Entity Deleted Successfully!")
+                }
+            });
+            }
+        }
+
+    </script>
+    {% endblock %}
+</body>
+{% load static %}
+<script src="{% static "js/popper.min.js" %}"></script>
+<script src="{% static "js/jquery-3.3.1.js" %}"></script>
+<script src="{% static "js/bootstrap.min.js" %}"></script>
+
+</html>

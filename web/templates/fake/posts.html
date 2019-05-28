@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% load static %}
+    <!-- <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet"> -->
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/style.css" %}" />
+    {% load static %}
+    <script src="{% static "js/jquery-3.3.1.js" %}"></script>
+    {% load static %}
+    <script href="{% static "js/script.js" %}"></script>
+    <title>Trending</title>
+
+    <style>
+            .custom_input{
+                /* box-shadow:  0 0 2px 2px  rgba(240, 240, 240, 0.19) , 0 0 2px 2px rgba(240, 240, 240, 0.2) ; */
+                margin: 10px 0;
+                border: none;
+                color: white;
+                border-radius: 0px;
+                background-color: rgba(150,150,150, 0.3) !important;
+            }
+        </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="/web/">ukweli.com</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            </div>
+
+
+            <ul class="navbar-nav float-left mx-4">
+                    <li class="nav-item active">
+                      <a class="nav-link" href="/web/posts"> #threads <span class="sr-only">(current)</span></a>
+                    </li>
+                    {% if system_user %}
+                    <li class="nav-item">
+                            <a class="nav-link" href="/web/posts_add"> add thread <span class="sr-only">(current)</span></a>
+                    </li>
+                    {% endif %}
+                  
+                </ul>
+                  
+            <form class="form-inline float-right" action="/web/search" method="POST">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">#</span>
+                    </div>
+                    <input type="text" name="search" id="name_search" class="form-control" placeholder="Latest" aria-label="Username" aria-describedby="basic-addon1">
+                    <input type="submit" id="submit_search" value="">
+                </div>
+                </form>
+            </nav>
+
+    
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-sm-8">
+                <div class="row">
+                    <div class="col p-2 m-2" style="border-radius: 10px; background-color: rgba(120,120,120, 0.1) !important; box-shadow:  0 0 15px 3px  rgba(127, 255, 0, 0.19) , 0 0 15px 3px rgba(127, 255, 0, 0.2) ;">
+                        <form action="/web/submit_thread" method='POST'>
+                           <span class="form-row">
+                               <input type="text" name="new_check" class="col-11 form-control custom_input mx-1" style="width:87% ; color: chartreuse" placeholder="#give me link">
+                               <input type="submit" class="col btn btn-outline-secondary custom_input mx-1 float-right" style="display: inline;" value="Report">
+                            </span> 
+                        </form>
+                    </div>
+                </div>
+                {% for post in posts %}
+                <div class="card p-2 m-4" style="border-radius: 8px">
+                    {% if system_user %}
+                        <a class="btn btn-outline-danger float-right" style="width:10%" onclick="del({{post.id}});"> Delete </a>
+                    {% endif %}
+                    <div class="card-body">
+                            <h5 class="card-title display-4">{{post.thread_name}}</h5>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <img src='/web{{post.img_path}}' style=" border-radius: 8px; box-shadow:  0 0 12px 2px  rgba(240, 240, 240, 0.19) , 0 0 12px 2px rgba(240, 240, 240, 0.2) ;" alt="img" class="img img-fluid" />
+                                </div>
+
+                                <div class="col-sm-8">
+                                    <p class="card-text lead">{{post.additional_text}}</p>
+                                    <a class="card-title" href="{{post.news_link}}" >{{post.news_link}}</a>
+                                    <p class="card-text">By {{post.by}}</p>
+                                    <p class="card-title">On {{post.date_created}}</p>
+                                    <p class="card-text" style="font-size: 32px">#{{post.status}}</p>
+                                </div>
+                            </div>
+                      <form action="">
+                          <span>
+                              <a class="btn btn-outline-secondary" onclick="vote('up',{{post.id}});"> up </a>
+                              <a class="btn btn-outline-secondary" onclick="vote('down',{{post.id}});"> down </a>
+                          </span>
+                      </form>
+
+                      <div>
+                        <span class="btn btn-outline-dark" style="border:none" id='up{{post.id}}'>{{post.up_val}} ups</span> &
+                        <span class="btn btn-outline-dark" style="border:none" id="down{{post.id}}">{{post.down_val}} downs</span> 
+                    </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+<!--chatbox-->
+<div>
+        <div class="chat" id="chat">
+            <!--fab-->
+            <div class="img_cont fab" style="background: white;border-radius: 100%" id="fab" onclick="openup();">
+                <img src="{% static "images/bot.png" %}" class="rounded-circle user_img" id="fab">
+                <span class="online_icon"></span>
+            </div>
+            <!--end of fab-->
+
+            <div class="card h-75 chat-popup">
+                <div class="card-header msg_head" id="msg_head">
+                    <div class="d-flex bd-highlight">
+                        <div class="img_cont">
+                            <img src="{% static "images/bot.png" %}" class="rounded-circle user_img">
+                        </div>
+                        <div class="user_info">
+                            <span class="px-2">XAD</span>
+                            <p class="px-2">active</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="message_content">
+                    <div class="card-body msg_card_body">
+                        <!--   conversation  -->
+                    </div>
+                </div>
+                <div class="card-footer msg_input">
+                    <div class="input-group">
+                        <input style="border-radius: 2px" type="text" id="question" name="question" class="form-control type_msg"
+                            placeholder="Type your message...">
+                        <div class="input-group-append" >
+                            <button style="display:none" type="submit" class="input-group-text send_btn" id="submit"
+                                onclick="reply();"><i class="fas fa-location-arrow"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!--end of chatbox-->
+
+
+
+    {% block javascript %}
+    <script>
+            $(document).ready(function () {
+            $('.type_msg').focus();
+            $('#msg_head').click(function () {
+                $('.chat-popup').hide();
+                $("#fab").show();
+            });
+            $("#question").keypress(
+                function (event) {
+                    // Number 13 is the "Enter" key on the keyboard
+                    if (event.keyCode === 13) {
+                        // Cancel the default action, if needed
+                        event.preventDefault();
+                        // Trigger the button element with a click
+                        $("#submit").click();
+                    }
+                });
+
+            //$("#fab").effect( "bounce", {times:3}, 300 );
+
+        });
+        var mode = 0;
+        var object;
+
+        function reply() {
+            var pattern = $('#question').val();
+            $.ajax({
+                url: '/web/chat/ans',
+                data: {
+                    'question': pattern
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if ($('.type_msg').val() == "") {
+                        return;
+                    } else {
+                        var d = new Date();
+                        var curr_hour = d.getHours();
+                        var curr_min = d.getMinutes();
+                        $('.msg_card_body').append(`
+                            <div class="d-flex justify-content-end mb-4">
+                                <div id="msg1" class="msg_cotainer_send">` + data['question'] +
+                            ` <span class="msg_time_send ml-5">` + curr_hour + `:` + curr_min + `</span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-start mb-4">
+                                        <div class="img_cont_msg" >
+                                                <img src="{% static "images/bot.png" %}"  class="rounded-circle user_img_msg">
+                                        </div>
+                                        <div id="msg1" class="msg_cotainer" >
+                                                <span>` + data['answer'] + `</span>
+                                                <span  class="msg_time_send ml-5" style="color:black" >` + curr_hour + `:` + curr_min + `</span> 
+                                        </div>            
+                            </div>
+                    `
+                        );
+                    }
+                    $('.type_msg').val("");
+                    $('.msg_card_body').animate({
+                        scrollTop: $('.msg_card_body').prop('scrollHeight')
+                    }, 300);
+                    $('.message_content').animate({
+                        scrollTop: $('.message_content').prop('scrollHeight')
+                    }, 300);
+                    $('.type_msg').focus();
+
+
+                }
+            });
+        };
+
+        function openup() {
+            $('.chat-popup').show();
+            $("#fab").hide();
+            $('.type_msg').focus();
+        };
+
+        function vote(value,id){
+            
+            $.ajax({
+                url: '/web/vote/',
+                data: {
+                    'vote': value,
+                    'id':id
+                },
+                dataType: 'json',
+                success: function (data) {
+                    document.getElementById('up'+data['id']).innerHTML='UP '+data['up']
+                    document.getElementById('down'+data['id']).innerHTML='Down '+data['down']
+                }
+            });
+        }
+        
+        function del(del_id){
+            var inv= confirm("ARE YOU SURE YOU WANT TO DELETE THIS ENTITY??")
+            inv.show
+            if(inv){
+                $.ajax({
+                url: '/web/posts/delete/',
+                data: {
+                    'del_id': del_id
+                },
+                dataType: 'json',
+                success: function (data) {
+                    confirm("Entity Deleted Successfully!")
+                }
+            });
+            }
+        }
+    </script>
+    {% endblock %}
+</body>
+
+{% load static %}
+<script src="{% static "js/popper.min.js" %}"></script>
+<script src="{% static "js/jquery-3.3.1.js" %}"></script>
+<script src="{% static "js/bootstrap.min.js" %}"></script>
+<!-- <script src="{% static "js/script.js" %}"></script> -->
+
+</html>

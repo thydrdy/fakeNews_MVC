@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% load static %}
+    <!-- <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet"> -->
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/style.css" %}" />
+    {% load static %}
+    <script src="{% static "js/jquery-3.3.1.js" %}"></script>
+    {% load static %}
+    <script href="{% static "js/script.js" %}"></script>
+    <title>ukweli.com</title>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="/web/">ukweli.com</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            </div>
+
+            <ul class="navbar-nav float-left mx-4">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/web/posts"> #threads <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item ">
+                    <a class="nav-link" href="/web/login"> Login <span class="sr-only">(current)</span></a>
+                  </li>
+                    {% if system_user %}
+                    <li class="nav-item">
+                            <a class="nav-link" href="/web/posts_add"> add thread <span class="sr-only">(current)</span></a>
+                    </li>
+                    {% endif %}
+                  
+                </ul>
+
+            <form class="form-inline float-right" action="/web/search" method="POST">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">#</span>
+                    </div>
+                    <input type="text" name="search" id="name_search" class="form-control" placeholder="Latest" aria-label="Username" aria-describedby="basic-addon1">
+                    <input type="submit" id="submit_search" value="">
+                </div>
+                </form>
+            </nav>
+
+
+
+    <div class="container-fluid">
+       <div class="jumbotron text-center">
+           <h1 class="display-4">ukweli.com</h1> 
+           <p class="w-50 lead mx-auto" style="font-size: 24px">Yet another diffrent approach to solve the fake news crisis, our team of dedicated fact
+               checkes will be at your service 24/7 to deliver you a verified news.Our bot will create an
+               interactive experiance of checking and following a chosen thread of story from our pool of 
+               tracked news.
+           </p>
+       </div>
+
+       <div class="row">
+       </div>
+    </div>
+
+    <!--chatbox-->
+    <div>
+            <div class="chat" id="chat">
+                <!--fab-->
+                <div class="img_cont fab" style="background: white;border-radius: 100%" id="fab" onclick="openup();">
+                    <img src="{% static "images/bot.png" %}" class="rounded-circle user_img" id="fab">
+                    <span class="online_icon"></span>
+                </div>
+                <!--end of fab-->
+
+                <div class="card h-75 chat-popup">
+                    <div class="card-header msg_head" id="msg_head">
+                        <div class="d-flex bd-highlight">
+                            <div class="img_cont">
+                                <img src="{% static "images/bot.png" %}" class="rounded-circle user_img">
+                            </div>
+                            <div class="user_info">
+                                <span class="px-2">XAD</span>
+                                <p class="px-2">active</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="message_content">
+                        <div class="card-body msg_card_body">
+                            <!--   conversation  -->
+                        </div>
+                    </div>
+                    <div class="card-footer msg_input">
+                        <div class="input-group">
+                            <input style="border-radius: 2px" type="text" id="question" name="question" class="form-control type_msg"
+                                placeholder="Type your message...">
+                            <div class="input-group-append" >
+                                <button style="display:none" type="submit" class="input-group-text send_btn" id="submit"
+                                    onclick="reply();"><i class="fas fa-location-arrow"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!--end of chatbox-->
+
+
+    {% block javascript %}
+    <script>
+        $(document).ready(function () {
+            $('.type_msg').focus();
+            $('#msg_head').click(function () {
+                $('.chat-popup').hide();
+                $("#fab").show();
+            });
+            $("#question").keypress(
+                function (event) {
+                    // Number 13 is the "Enter" key on the keyboard
+                    if (event.keyCode === 13) {
+                        // Cancel the default action, if needed
+                        event.preventDefault();
+                        // Trigger the button element with a click
+                        $("#submit").click();
+                    }
+                });
+
+            //$("#fab").effect( "bounce", {times:3}, 300 );
+
+        });
+        var mode = 0;
+        var object;
+
+        function reply() {
+            var pattern = $('#question').val();
+            $.ajax({
+                url: '/web/chat/ans',
+                data: {
+                    'question': pattern
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if ($('.type_msg').val() == "") {
+                        return;
+                    } else {
+                        var d = new Date();
+                        var curr_hour = d.getHours();
+                        var curr_min = d.getMinutes();
+                        $('.msg_card_body').append(`
+                            <div class="d-flex justify-content-end mb-4">
+                                <div id="msg1" class="msg_cotainer_send">` + data['question'] +
+                            ` <span class="msg_time_send ml-5">` + curr_hour + `:` + curr_min + `</span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-start mb-4">
+                                        <div class="img_cont_msg" >
+                                                <img src="{% static "images/bot.png" %}"  class="rounded-circle user_img_msg">
+                                        </div>
+                                        <div id="msg1" class="msg_cotainer" >
+                                                <span>` + data['answer'] + `</span>
+                                                <span  class="msg_time_send ml-5" style="color:black" >` + curr_hour + `:` + curr_min + `</span> 
+                                        </div>            
+                            </div>
+                    `
+                        );
+                    }
+                    $('.type_msg').val("");
+                    $('.msg_card_body').animate({
+                        scrollTop: $('.msg_card_body').prop('scrollHeight')
+                    }, 300);
+                    $('.message_content').animate({
+                        scrollTop: $('.message_content').prop('scrollHeight')
+                    }, 300);
+                    $('.type_msg').focus();
+
+
+                }
+            });
+        };
+
+        function openup() {
+            $('.chat-popup').show();
+            $("#fab").hide();
+            $('.type_msg').focus();
+        };
+
+        function del(entity_id){
+            var inv= confirm("ARE YOU SURE YOU WANT TO DELETE THIS ENTITY??")
+            inv.show
+            if(inv){
+                $.ajax({
+                url: '/web/delete/',
+                data: {
+                    'entity_id': entity_id
+                },
+                dataType: 'json',
+                success: function (data) {
+                    confirm("Entity Deleted Successfully!")
+                }
+            });
+            }
+        }
+
+    </script>
+    {% endblock %}
+</body>
+{% load static %}
+<script src="{% static "js/popper.min.js" %}"></script>
+<script src="{% static "js/jquery-3.3.1.js" %}"></script>
+<script src="{% static "js/bootstrap.min.js" %}"></script>
+
+
+</body>
+</html>

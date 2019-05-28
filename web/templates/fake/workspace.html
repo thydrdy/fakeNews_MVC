@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% load static %}
+    <!-- <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet"> -->
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+    {% load static %}
+    <!-- <link rel="stylesheet" href="{% static "css/bootstrap.css" %}" /> -->
+    <link rel="stylesheet" href="{% static "css/style.css" %}" />
+    <link rel="stylesheet" href="{% static "css/fileinput.css" %}" />
+    {% load static %}
+    <script src="{% static "js/script.js" %}"></script>
+    <title>Document</title>
+    
+</head>
+<body>
+
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <a class="navbar-brand" href="/web/">ukweli.com</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                </div>
+    
+    
+                <ul class="navbar-nav float-left mx-4">
+                        <li class="nav-item active">
+                          <a class="nav-link" href="/web/posts"> #threads <span class="sr-only">(current)</span></a>
+                        </li>
+                        {% if system_user %}
+                        <li class="nav-item">
+                                <a class="nav-link" href="/web/posts_add"> add thread <span class="sr-only">(current)</span></a>
+                        </li>
+                        {% endif %}
+                      
+                    </ul>
+                      
+                <form class="form-inline float-right" action="/web/search" method="POST">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">#</span>
+                        </div>
+                        <input type="text" name="search" id="name_search" class="form-control" placeholder="Latest" aria-label="Username" aria-describedby="basic-addon1">
+                        <input type="submit" id="submit_search" value="">
+                    </div>
+                    </form>
+                </nav>
+    
+
+    <div class="container-fluid bg-dark h-100">
+        <div class="row">
+            <div class="col-sm-4" style="border-right: solid 1px black ; overflow-y: scroll">
+                 <p class="text-center display-4 text-light">Requests</p>
+                 {% for link in unchecked_links %}
+                 <div class="p-3 m-2" style="border: solid 1px black ; border-radius: 5px">
+                     <span><a href="/web/check_uncheck_link/{{link.id}}">{{link.thread_link}}</a>
+                           <a class="btn btn-outline-secondary float-right">verify</a>
+                     </span>
+                 </div>
+                 {% endfor %}
+            </div>
+ 
+            <div class="col-sm-8">
+                 <div class="row">
+                    <div class="col-sm-5">
+                        <form action="/web/check_img" method="POST" enctype="multipart/form-data">
+                            <input id="file_upload" type="file" name="check_image"  data-preview-file-type="text" >
+                        </form>
+                    </div>
+                     
+ 
+                     <div class="col-sm-7">
+                         <p class="text-center display-4 text-light">Analysis</p>
+                         <div style="border: solid 1px black ; border-radius: 5px">
+                            {% for key, values in context.items %}
+                             <div class="p-3 m-2">
+                                    <span>{{key}}</span><span>{{values}}</span>
+                             </div>
+                             {% endfor %}
+ 
+                         
+                         </div>
+                     </div>
+                 </div>
+            </div>
+        </div>
+     </div>
+
+
+
+
+
+<!--chatbox-->
+<div>
+    <div class="chat" id="chat">
+        <!--fab-->
+        <div class="img_cont fab" id="fab" onclick="openup();">
+            <img src="{% static "images/bot.png" %}" class="rounded-circle user_img" id="fab">
+            <span class="online_icon"></span>
+        </div>
+        <!--end of fab-->
+        <div class="card h-75 chat-popup">
+            <div class="card-header msg_head" id="msg_head">
+                <div class="d-flex bd-highlight">
+                    <div class="img_cont">
+                        <img src="{% static "images/bot.png" %}" class="rounded-circle user_img">
+                    </div>
+                    <div class="user_info">
+                        <span>XAD</span>
+                        <p> <span id="no"></span> Messages</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="message_content">
+                <div class="card-body msg_card_body">
+                    <!--   conversation  -->
+                </div>
+            </div>
+            <div class="card-footer msg_input">
+                <div class="input-group">
+                    <input type="text" id="question" name="question" class="form-control type_msg"
+                        placeholder="Type your message...">
+                    <div class="input-group-append">
+                        <button type="submit" class="input-group-text send_btn" id="submit"
+                            onclick="reply();"><i class="fas fa-location-arrow"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% load static %}
+<script src="{% static "js/popper.min.js" %}"></script>
+<script src="{% static "js/jquery-3.3.1.js" %}"></script>
+<script src="{% static "js/bootstrap.min.js" %}"></script>
+
+<script src="{% static "js/script.js" %}" ></script>
+<script src="{% static "js/plugins/piexif.js" %}" ></script>
+<script src="{% static "js/plugins/purify.js" %}" ></script>
+<script src="{% static "js/plugins/sortable.js" %}" ></script>
+<script src="{% static "js/jquery.js" %}" ></script>
+<script src="{% static "js/bootstrap.js" %}" ></script>
+<script src="{% static "js/fileinput.js" %}" ></script>
+<script src="{% static "js/script.js" %}"></script>
+<!--end of chatbox-->
+
+
+{% block javascript %}
+<script>
+$("#file_upload").fileinput({'showUpload':true, 'previewFileType':'any'});
+document.getElementById('name_search').addEventListener('keypress', function(event) {
+    if (event.keyCode == 13) {
+        event.preventDefault();
+        document.getElementById('submit_search').click()
+    }
+});
+$(document).ready(function () {
+    $('.type_msg').focus();
+    $('#msg_head').click(function () {
+        $('.chat-popup').hide();
+        $("#fab").show();
+    });
+    $("#question").keypress(
+        function (event) {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                // Trigger the button element with a click
+                $("#submit").click();
+            }
+        });
+
+    //$("#fab").effect( "bounce", {times:3}, 300 );
+
+});
+var mode = 0;
+var object;
+
+function reply() {
+    var pattern = $('#question').val();
+    $.ajax({
+        url: '/web/chat/ans',
+        data: {
+            'question': pattern
+        },
+        dataType: 'json',
+        success: function (data) {
+            if ($('.type_msg').val() == "") {
+                return;
+            } else {
+                var d = new Date();
+                var curr_hour = d.getHours();
+                var curr_min = d.getMinutes();
+                $('.msg_card_body').append(`
+                    <div class="d-flex justify-content-end mb-4">
+                        <div id="msg1" class="msg_cotainer_send">` + data['question'] +
+                    ` <span class="msg_time_send">` + curr_hour + `:` + curr_min + `</span>
+                        </div>
+                        <div class="img_cont_msg">
+                            <img  src="{% static "images/user.png" %}"  class="rounded-circle user_img_msg">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-start mb-4">
+                                <div class="img_cont_msg" >
+                                        <img src="{% static "images/bot.png" %}"  class="rounded-circle user_img_msg">
+                                </div>
+                                <div id="msg1" class="msg_cotainer" >
+                                        <span>` + data['answer'] + `</span>
+                                        <span class="msg_time_send" >` + curr_hour + `:` + curr_min + `</span> 
+                                </div>            
+                    </div>
+            `
+                );
+            }
+            $('.type_msg').val("");
+            $('.msg_card_body').animate({
+                scrollTop: $('.msg_card_body').prop('scrollHeight')
+            }, 300);
+            $('.message_content').animate({
+                scrollTop: $('.message_content').prop('scrollHeight')
+            }, 300);
+            $('.type_msg').focus();
+
+
+        }
+    });
+};
+
+function openup() {
+    $('.chat-popup').show();
+    $("#fab").hide();
+    $('.type_msg').focus();
+};
+
+function check_link(id){
+    alert('here')
+    $.ajax({
+        url: '/web/check_uncheck_link/',
+        async: false,
+        type: "GET",
+        data: {
+            'id':id
+        },
+        dataType: 'json',
+        success: function (data) {
+            alert('success')
+            document.getElementById('check'+data['id']).style.display=none
+        }
+    });
+}
+
+$("#file_upload").fileinput({'showUpload':true, 'previewFileType':'any'});
+
+</script>
+{% endblock %}
+</body>
+<script>
+        $("#file_upload").fileinput({'showUpload':true, 'previewFileType':'any'});
+</script>
+
+</html>

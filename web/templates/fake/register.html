@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% load static %}
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+    <title>Register</title>
+
+    <style>
+            .custom_input{
+                /* box-shadow:  0 0 2px 2px  rgba(240, 240, 240, 0.19) , 0 0 2px 2px rgba(240, 240, 240, 0.2) ; */
+                margin: 10px 0;
+                border: none;
+                color: white;
+                border-radius: 0px;
+                background-color: rgba(150,150,150, 0.3) !important;
+            }
+        </style>
+
+</head>
+<body>
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="box-shadow:  0 0 26px 6px  rgba(55, 90, 127 , 0.29) , 0 0 26px 6px rgba(55, 90, 127 , 0.22);">
+                <a class="navbar-brand" href="/web/">ukweli.com</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                </div>
+                <ul class="navbar-nav float-left mx-4">
+                        <li class="nav-item active">
+                          <a class="nav-link" href="/web/posts"> #threads <span class="sr-only">(current)</span></a>
+                        </li>
+                        {% if system_user %}
+                        <li class="nav-item">
+                                <a class="nav-link" href="/web/posts_add"> add thread <span class="sr-only">(current)</span></a>
+                        </li>
+                        {% endif %}
+                      
+                    </ul>
+                <form class="form-inline float-right" action="/web/search" method="POST">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">#</span>
+                        </div>
+                        <input type="text" name="search" id="name_search" class="form-control" placeholder="Latest" aria-label="Username" aria-describedby="basic-addon1">
+                        <input type="submit" id="submit_search" value="">
+                    </div>
+                    </form>
+                </nav>
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-sm-4 p-5" style="border-radius: 10px; background-color: rgba(100,100,100, 0.1) !important;position: fixed;top:20% ;  box-shadow:  0 0 25px 3px  rgba(127, 255, 0, 0.19) , 0 0 25px 3px rgba(127, 255, 0, 0.2) ;">
+                <p class="text-center display-4">SignUp</p>
+                <form  action="/web/register/qwertyuiop0987654321/post" method="POST">
+
+                    <div class="form-group">
+                        <div class="form-row mb-0">
+                            <input type="text" style="color:white" name="first_name" class=" col mx-2 mb-1 form-control custom_input" placeholder="First Name">
+                            <input type="text" style="color:white" name="middle_name" class=" col mx-2 mb-1 form-control custom_input" placeholder="Middle Name">
+                            <input type="text" style="color:white" name="last_name" class=" col mx-2 mb-1 form-control custom_input" placeholder="Last Name">        
+                        </div>
+                        <input type="text" style="color:white" name="email" class="form-control custom_input" placeholder="email">                        
+                        <input type="password" style="color:white" name="pwd1" class="form-control custom_input" placeholder="password">
+                        <input type="password" style="color:white" name="pwd2" class="form-control custom_input" placeholder="confirm password">
+                        
+                        <input type="submit" class="btn btn-outline-secondary float-right custom_input" name="" id="" value="Register">
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
